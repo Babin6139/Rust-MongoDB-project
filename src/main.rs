@@ -49,5 +49,13 @@ async fn main()->Result<()>{
         .and(with_db(db.clone()))
         .and_then(handler::books_list_handler)
 
-    )
+    );
+    let routes=book_routes.recover(error::handle_rejection);
+    println!("Started on port 8080");
+    warp::serve(routes).run([0,0,0,0],8080).await;
+    Ok(())
+}
+
+fn with_db(db:DB)-> impl Filter<Extract=(DB,),Error=Infallible> + Clone{
+    warp::any().map(move||db.clone());
 }
