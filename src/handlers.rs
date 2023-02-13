@@ -2,6 +2,7 @@ use crate::{WebResult,db::DB};
 use serde::{Serialize, Deserialize};
 use warp::{http::StatusCode,reject,reply::json,Reply};
 
+#[derive(Serialize,Deserialize,Debug)]
 pub struct BookRequest{
     pub name:String,
     pub author:String,
