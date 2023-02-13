@@ -9,7 +9,7 @@ type WebResult<T>=std::result::Result<T, Rejection>;
 
 mod db;
 mod error;
-mod handler;
+mod handlers;
 
 #[derive(Serialize,Deserialize,Debug)]
 pub struct Book{
@@ -30,29 +30,29 @@ async fn main()->Result<()>{
     .and(warp::post())
     .and(warp::body::json())
     .and(with_db(db.clone()))
-    .and_then(handler::create_book_handler)
+    .and_then(handlers::create_book_handler)
     .or(book
         .and(warp::put())
         .and(warp::path::param())
         .and(warp::body::json())
         .and(with_db(db.clone()))
-        .and_then(handler::edit_book_handler)
+        .and_then(handlers::edit_book_handler)
     )
     .or(book
         .and(warp::delete())
         .and(warp::path::param())
         .and(with_db(db.clone()))
-        .and_then(handler::delete_book_handler)
+        .and_then(handlers::delete_book_handler)
     )
     .or(book
         .and(warp::get())
         .and(with_db(db.clone()))
-        .and_then(handler::books_list_handler)
+        .and_then(handlers::books_list_handler)
 
     );
     let routes=book_routes.recover(error::handle_rejection);
     println!("Started on port 8080");
-    warp::serve(routes).run([0,0,0,0],8080).await;
+    warp::serve(routes).run(([0,0,0,0],8080)).await;
     Ok(())
 }
 
