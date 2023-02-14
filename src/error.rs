@@ -42,6 +42,17 @@ pub async fn handle_rejection(err:Rejection)->std::result::Result<Box<dyn Reply>
                 message="Internal Server Error";
             }
         }
+    }else if  let Some(_)=err.find::<warp::reject::MethodNotAllowed>() {
+        code=StatusCode::METHOD_NOT_ALLOWED;
+        message=" Method not allowed";
+    }else{
+        eprintln!("unhandled error: {:?}",err);
+        code=StatusCode::INTERNAL_SERVER_ERROR;
+        message="Internal Server Error";
     }
+    let json=reply::json(&ErrorResponse{
+        message:message.into(),
+    });
+    Ok(Box::new(reply::with_status(json,code)))
 }
 
