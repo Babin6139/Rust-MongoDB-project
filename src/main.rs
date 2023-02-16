@@ -33,9 +33,9 @@ async fn main()->Result<()>{
     .and_then(handlers::create_book_handler)
     .or(book
         .and(warp::put())
-        .and(warp::path::param())
         .and(warp::body::json())
         .and(with_db(db.clone()))
+        .and(warp::path::param())
         .and_then(handlers::edit_book_handler)
     )
     .or(book
@@ -57,5 +57,5 @@ async fn main()->Result<()>{
 }
 
 fn with_db(db:DB)-> impl Filter<Extract=(DB,),Error=Infallible> + Clone{
-    warp::any().map(move||db.clone());
+    warp::any().map(move||db.clone())
 }

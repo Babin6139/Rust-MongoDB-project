@@ -25,8 +25,8 @@ struct  ErrorResponse{
 impl warp::reject::Reject for Error{
 }
 pub async fn handle_rejection(err:Rejection)->std::result::Result<Box<dyn Reply>,Infallible>{
-    let mut code:StatusCode;
-    let mut message:&str;
+    let code:StatusCode;
+    let message:&str;
 
     if err.is_not_found(){
         code=StatusCode::NOT_FOUND;
